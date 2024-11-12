@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if user %}
+        <h2>Profile Information</h2>
+        <p>Username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Contact Number: {{ user.contact_number }}</p>
+        <p>Address: {% if default_address %}{{ default_address.address_line1 }} (Default) {% else %}No default address set.{% endif %}</p>
+        <p><a href="{{ url_for('manage_addresses') }}">Manage Addresses</a></p>
+        <form action="{{ url_for('update_profile') }}" method="get">
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+        <hr>
+
+        <h3>My Products</h3>
+        {% if products %}
+            <ul class="product-list">
+            {% for product in products %}
+                <li class="product-item">
+                    <img class="product-image" src="{{ product.image_url }}" alt="{{ product.name }}">
+                    <div class="product-info">
+                        <h2 class="product-name">{{ product.name }}</h2>
+                        <p class="product-price">${{ product.price }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't added any products yet.</p>
+        {% endif %}
+    {% else %}
+        <p>Unable to retrieve profile information.</p>
+    {% endif %}
+</div>
+{% endblock %}

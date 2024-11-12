@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results for "{{ query }}"</h1>
+    {% if products %}
+        <ul>
+            {% for product in products %}
+                <li>
+                    <h2>{{ product.name }}</h2>
+                    <p>Category: {{ product.category_name }}</p>
+                    <p>Price: ${{ product.price }}</p>
+                    <a href="{{ url_for('view_product', id=product.id) }}">View Product</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
+    <a href="{{ url_for('products') }}">Back to Products</a>
+</body>
+</html>

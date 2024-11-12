@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Manage Sellers{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Manage Sellers</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if sellers %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Join Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seller in sellers %}
+                        <tr>
+                            <td>{{ seller.id }}</td>
+                            <td>{{ seller.username }}</td>
+                            <td>{{ seller.email }}</td>
+                            <td>{{ seller.created_at.strftime('%Y-%m-%d %H:%M:%S') if seller.created_at else 'N/A' }}</td>
+                            <td>
+                                <form action="{{ url_for('revoke_seller_status', user_id=seller.id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to remove seller privileges from this user?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-user-times"></i> Remove Seller Status
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No sellers found.
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

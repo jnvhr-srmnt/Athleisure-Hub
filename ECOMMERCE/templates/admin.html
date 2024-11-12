@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<h2>Users</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+            <form action="{{ url_for('admin_delete_user', id=user.id) }}" method="post">
+                <input type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Products</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Seller ID</th>
+        <th>Actions</th>
+    </tr>
+    {% for product in products %}
+    <tr>
+        <td>{{ product.id }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.price }}</td>
+        <td>{{ product.seller_id }}</td>
+        <td>
+            <form action="{{ url_for('admin_delete_product', id=product.id) }}" method="post">
+                <input type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Seller Requests</h2>
+<table>
+    <tr>
+        <th>User ID</th>
+        <th>Reason</th>
+        <th>Actions</th>
+    </tr>
+    {% for request in seller_requests %}
+    <tr>
+        <td>{{ request.user_id }}</td>
+        <td>{{ request.reason }}</td>
+        <td>
+            <form action="{{ url_for('admin_verify_seller', id=request.user_id) }}" method="post">
+                <input type="submit" value="Verify as Seller">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

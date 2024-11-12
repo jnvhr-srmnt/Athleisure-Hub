@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Products{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Product Management</h2>
+
+    {% if products %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Image</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Seller</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>
+                                {% if product.image_url %}
+                                    <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                    <span class="text-muted">No image</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description[:50] }}{% if product.description|length > 50 %}...{% endif %}</td>
+                            <td>₱{{ "%.2f"|format(product.price) }}</td>
+                            <td>{{ product.seller_name }}</td>
+                            <td>
+                                <a href="{{ url_for('admin_edit_product', id=product.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{{ url_for('admin_delete_product', id=product.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No products found.
+        </div>
+    {% endif %}
+</div>
+
+<!-- Add this if you're using Bootstrap 5 and want the alerts to be dismissible -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

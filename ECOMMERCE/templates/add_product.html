@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center">Add New Product</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_product') }}" method="POST" enctype="multipart/form-data">
+                        <!-- Product Name -->
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="name" 
+                                   name="name" 
+                                   required 
+                                   maxlength="255"
+                                   placeholder="Enter product name">
+                        </div>
+
+                        <!-- Product Description -->
+                        <div class="form-group mb-3">
+                            <label for="description" class="form-label">Product Description <span class="text-danger">*</span></label>
+                            <textarea 
+                                class="form-control" 
+                                id="description" 
+                                name="description" 
+                                rows="4" 
+                                required 
+                                maxlength="1000"
+                                placeholder="Provide detailed product description"
+                            ></textarea>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="form-group mb-3">
+                            <label for="price" class="form-label">Price <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">₱</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="price" 
+                                       name="price" 
+                                       required 
+                                       min="0" 
+                                       step="0.01"
+                                       placeholder="Enter product price">
+                            </div>
+                        </div>
+
+                        <!-- Stock Quantity -->
+                        <div class="form-group mb-3">
+                            <label for="stock" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="stock" 
+                                   name="stock" 
+                                   required 
+                                   min="0"
+                                   placeholder="Enter available stock">
+                        </div>
+
+                        <!-- Category Selection -->
+                        <div class="form-group mb-3">
+                            <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
+                            <select 
+                                class="form-select" 
+                                id="category_id" 
+                                name="category_id" 
+                                required
+                            >
+                                <option value="">Select a Category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Product Image Upload -->
+                        <div class="form-group mb-3">
+                            <label for="image" class="form-label">Product Image</label>
+                            <input 
+                                type="file" 
+                                class="form-control" 
+                                id="image" 
+                                name="image" 
+                                accept="image/*"
+                            >
+                            <small class="form-text text-muted">
+                                Allowed file types: PNG, JPG, JPEG, GIF (Max 5MB)
+                            </small>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="form-group mb-3">
+                            <div id="image-preview" class="text-center">
+                                <img id="preview" src="" alt="Image Preview" style="max-width: 300px; display: none;">
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus-circle"></i> Add Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Image Preview Functionality
+    document.getElementById('image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview');
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
+        }
+    });
+
+    // Form Validation
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const name = document.getElementById('name');
+        const description = document.getElementById('description');
+        const price = document.getElementById('price');
+        const stock = document.getElementById('stock');
+        const category = document.getElementById('category_id');
+
+        let isValid = true;
+
+        // Name validation
+        if (name.value.trim() === '') {
+            name.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            name.classList.remove('is-invalid');
+        }
+
+        // Description validation
+        if (description.value.trim() === '') {
+            description.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            description.classList.remove('is-invalid');
+        }
+
+        // Price validation
+        if (price.value === '' || parseFloat(price.value) < 0) {
+            price.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            price.classList.remove('is-invalid');
+        }
+
+        // Stock validation
+        if (stock.value === '' || parseInt(stock.value) < 0) {
+            stock.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            stock.classList.remove('is-invalid');
+        }
+
+        // Category validation
+        if (category.value === '') {
+            category.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            category.classList.remove('is-invalid');
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

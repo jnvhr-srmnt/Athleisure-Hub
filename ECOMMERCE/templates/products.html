@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h2>Products</h2>
+
+<!-- Filter and Sorting Form -->
+<form method="GET" action="{{ url_for('filter_products') }}" class="mb-4">
+    <div class="form-row align-items-end">
+        <div class="col-auto">
+            <label for="min_price">Min Price:</label>
+            <input type="number" class="form-control" name="min_price" id="min_price" placeholder="0" step="0.01" value="{{ request.args.get('min_price') }}">
+        </div>
+        <div class="col-auto">
+            <label for="max_price">Max Price:</label>
+            <input type="number" class="form-control" name="max_price" id="max_price" placeholder="1000" step="0.01" value="{{ request.args.get('max_price') }}">
+        </div>
+        <div class="col-auto">
+            <label for="sort_by">Sort By:</label>
+            <select class="form-control" name="sort_by" id="sort_by">
+                <option value="name" {% if request.args.get('sort_by') == 'name' %}selected{% endif %}>Name</option>
+                <option value="price" {% if request.args.get('sort_by') == 'price' %}selected{% endif %}>Price</option>
+                <option value="popularity" {% if request.args.get('sort_by') == 'popularity' %}selected{% endif %}>Popularity</option>
+                <option value="ratings" {% if request.args.get('sort_by') == 'ratings' %}selected{% endif %}>Ratings</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <label for="order">Order:</label>
+            <select class="form-control" name="order" id="order">
+                <option value="asc" {% if request.args.get('order') == 'asc' %}selected{% endif %}>Ascending</option>
+                <option value="desc" {% if request.args.get('order') == 'desc' %}selected{% endif %}>Descending</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+        </div>
+    </div>
+</form>
+
+{% if session.get('role') != 'admin' %}
+<div class="mb-4">
+    <a href="{{ url_for('add_product') }}" class="btn btn-success">Add Product</a>
+</div>
+{% endif %}
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            {% if product.image_url %}
+            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+            {% else %}
+            <div class="card-img-top bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                No Image
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description[:100] }}...</p>
+                <p class="card-text"><strong>Price:</strong> ₱{{ product.price }}</p>
+                <a href="{{ url_for('view_product', id=product.id) }}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

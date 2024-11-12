@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container">
+            <a id="logo" class="navbar-brand" href="{{ url_for('home') }}">Athleisure Hub</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('products') }}">Products</a>
+                    </li>
+                    {% if session.get('role') != 'admin' %}
+                    <li class="nav-item">
+                        <a href="{{ url_for('view_cart') }}" class="nav-link">
+                            <i class="fas fa-shopping-cart"></i> Cart 
+                            {% if cart_items|length > 0 %}
+                            <span class="badge bg-danger">{{ cart_items|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if 'user_id' in session %}
+                        {% if session.get('role') == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                            </li>
+                            <!-- Add the new Manage Sellers link here -->
+                            {% if user and user.role == 'admin' %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('manage_sellers') }}">Manage Sellers</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                        {% if session.get('role') != 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if session.get('role') != 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('terms') }}">Terms</a>
+                    </li>
+                    {% endif%}
+
+                    {% if session.get('role') != 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Search Bar -->
+                <form class="form-inline my-2 my-lg-0 ml-3" action="{{ url_for('search') }}" method="GET">
+                    <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search products..." aria-label="Search" required>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="container text-center mt-4">
+            <p>&copy; 2023 Athleisure Hub. All rights reserved.</p>
+            <a href="{{ url_for('terms') }}">Terms and Conditions</a> |
+            <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+        </div>
+    </footer>
+</body>
+</html>

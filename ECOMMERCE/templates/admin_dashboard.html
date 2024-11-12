@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Admin Dashboard</h1>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text display-4">{{ user_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Products</h5>
+                    <p class="card-text display-4">{{ product_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Seller Requests</h5>
+                    <p class="card-text display-4">{{ pending_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h2>Recent Activities</h2>
+        <ul class="list-group">
+            {% for activity in recent_activities %}
+            <li class="list-group-item">
+                {{ activity.type }}: {{ activity.username }} ({{ activity.date }})
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('admin_users') }}" class="btn btn-primary">Manage Users</a>
+        <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">Manage Products</a>
+        <a href="{{ url_for('admin_seller_requests') }}" class="btn btn-info">Manage Seller Requests</a>
+    </div>
+</div>
+{% endblock %}

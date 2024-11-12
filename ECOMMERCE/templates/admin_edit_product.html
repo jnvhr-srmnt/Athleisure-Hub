@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Edit Product{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Product: {{ product.name }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label for="name">Product Name:</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="description">Description:</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required>{{ product.description }}</textarea>
+        </div>
+        <div class="form-group mb-3">
+            <label for="price">Price:</label>
+            <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" step="0.01" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="image">Product Image:</label>
+            <input type="file" class="form-control" id="image" name="image">
+            {% if product.image_url %}
+                <div class="mt-2">
+                    <p>Current image:</p>
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" style="max-width: 200px;">
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

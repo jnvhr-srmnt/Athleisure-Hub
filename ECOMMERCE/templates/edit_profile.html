@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Edit Profile</h2>
+    <form method="POST" action="{{ url_for('update_profile') }}">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="form-group">
+            <label for="contact_number">Contact Number:</label>
+            <input type="tel" id="contact_number" name="contact_number" value="{{ user.contact_number }}" required>
+        </div>
+        
+        <h3>Addresses</h3>
+        <a href="{{ url_for('manage_addresses') }}">Manage Addresses</a>
+        
+        <div class="form-group">
+            <input type="text" name="new_address" placeholder="Add a new address">
+            <label>
+                <input type="radio" name="default_address" value="new">
+                Set New Address as Default
+            </label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+</div>
+{% endblock %}

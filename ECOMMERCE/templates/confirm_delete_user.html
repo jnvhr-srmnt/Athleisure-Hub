@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete User{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="h3 mb-0">Confirm Delete User</h1>
+        </div>
+        <div class="card-body">
+            <p>Are you sure you want to delete the user: <strong>{{ user.username }}</strong>?</p>
+            
+            {% if product_count > 0 %}
+                <div class="alert alert-warning">
+                    <p class="mb-0">This user has {{ product_count }} product(s) listed. 
+                    What would you like to do with these products?</p>
+                </div>
+                
+                <form method="POST">
+                    {% if admins %}
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="action" 
+                                   id="transfer" value="transfer" checked>
+                            <label class="form-check-label" for="transfer">
+                                Transfer products to another admin
+                            </label>
+                        </div>
+                        <div class="form-group mb-3 ml-4" id="adminSelectGroup">
+                            <select class="form-control" id="admin_id" name="admin_id" required>
+                                {% for admin in admins %}
+                                    <option value="{{ admin.id }}">{{ admin.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="action" 
+                               id="delete" value="delete" {% if not admins %}checked{% endif %}>
+                        <label class="form-check-label" for="delete">
+                            Delete all associated products
+                        </label>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                        <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            {% else %}
+                <form method="POST">
+                    <input type="hidden" name="action" value="delete">
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                        <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const transferRadio = document.getElementById('transfer');
+    const deleteRadio = document.getElementById('delete');
+    const adminSelect = document.getElementById('admin_id');
+    const adminSelectGroup = document.getElementById('adminSelectGroup');
+
+    if (transferRadio && deleteRadio && adminSelect && adminSelectGroup) {
+        function updateAdminSelectVisibility() {
+            adminSelectGroup.style.display = transferRadio.checked ? 'block' : 'none';
+            adminSelect.required = transferRadio.checked;
+        }
+
+        transferRadio.addEventListener('change', updateAdminSelectVisibility);
+        deleteRadio.addEventListener('change', updateAdminSelectVisibility);
+
+        // Initial state
+        updateAdminSelectVisibility();
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %}
